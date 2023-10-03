@@ -99,4 +99,3 @@ fun delayByWorkingHourHelper(minutesToDelay, minutesDelayed) =
     end;
 
 fun delayByWorkingMinutes(min) = delayByWorkingHourHelper(min, 0)
-

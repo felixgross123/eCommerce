@@ -2,7 +2,7 @@ val LOGFILENAME = "ecommerce-log.csv";
 val CSV_SEP = ";";
 val LIST_SEP = ",";
 
-fun create_event_table() = 
+fun create_table() = 
 let
     val file_id = TextIO.openOut("./"^LOGFILENAME)
     val _ = TextIO.output(file_id, "time;activity;objects") 
