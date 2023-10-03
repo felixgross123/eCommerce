@@ -1,7 +1,7 @@
 (* file handling *)
 
 val OBJECT_TYPES = ["customer", "order", "item", "package"];
-val EVENT_TYPES = ["register", "login", "logout", "create order", "add item", "select shipping", "place order", "pay", "confirm payment", "cancel order", "prepare delivery", "give to carrier", "carrier confirms", "delivery", "delivered"];
+val EVENT_TYPES = ["register", "login", "logout", "create order", "add item", "select shipping", "place order", "pay", "send invoice", "confirm payment", "cancel order", "prepare delivery", "give to carrier", "carrier confirms", "delivery", "delivered"];
 val SEP = ";";
 
 fun list2string([]) = ""|
@@ -11,6 +11,7 @@ list2string(x::l) = x ^ (if l=[] then "" else SEP) ^ list2string(l);
 fun event_attrs(et) =
     if      et = "select shipping"  then ["option"]
     else if et = "pay"              then ["method"]
+    else if et = "confirm payment"  then ["method"]
     else if et = "prepare delivery" then ["option"]
     else if et = "give to carrier"  then ["option"]
     else if et = "carrier confirms" then ["option"]
@@ -32,6 +33,7 @@ fun event_map_type(et) =
     else if et = "select shipping"  then "selectShipping"
     else if et = "place order"      then "placeOrder"
     else if et = "pay"              then "pay"
+    else if et = "send invoice"     then "sendInvoice"
     else if et = "confirm payment"  then "confirmPayment"
     else if et = "cancel order"     then "cancelOrder"
     else if et = "prepare delivery" then "prepareDelivery"
