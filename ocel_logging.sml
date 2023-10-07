@@ -12,14 +12,14 @@ val startMinute = 0;
 fun addDays(month, day, days) =
     let
         val daysInCurrentMonth = List.nth (daysInMonth, month - 1)
-        val remainingDays = daysInCurrentMonth - day + 1
+        val remainingDays = daysInCurrentMonth - day
     in
         if days <= remainingDays then
             (month, day + days)
         else
             addDays(
                 month + 1,
-                1,
+                0,
                 days - remainingDays
             )
     end;
@@ -88,7 +88,7 @@ fun log_register(eventID, customerID, gender, yob, country) =
             TextIO.output(object_table, "\n");
             TextIO.closeOut(object_table);
 
-            TextIO.output(object_customer_table, list2string([customerID, date, gender, Int.toString yob, country]));
+            TextIO.output(object_customer_table, list2string([customerID, date, "", gender, Int.toString yob, country]));
             TextIO.output(object_customer_table, "\n");
             TextIO.closeOut(object_customer_table);
 
@@ -181,7 +181,7 @@ fun log_createOrder(eventID, customerID, orderID) =
             TextIO.output(object_table, "\n");
             TextIO.closeOut(object_table);
 
-            TextIO.output(object_order_table, list2string([orderID, date]));
+            TextIO.output(object_order_table, list2string([orderID, date, ""]));
             TextIO.output(object_order_table, "\n");
             TextIO.closeOut(object_order_table);
 
@@ -222,7 +222,7 @@ fun log_addItem(eventID, customerID, orderID, itemID, itemType, price) =
             TextIO.output(object_table, "\n");
             TextIO.closeOut(object_table);
 
-            TextIO.output(object_item_table, list2string([itemID, date, itemType, Int.toString price]));
+            TextIO.output(object_item_table, list2string([itemID, date, "", itemType, Int.toString price]));
             TextIO.output(object_item_table, "\n");
             TextIO.closeOut(object_item_table);
 
@@ -477,7 +477,7 @@ fun log_prepareDelivery(eventID, packageID, orderID, itemIDs, option) =
             TextIO.output(object_table, "\n");
             TextIO.closeOut(object_table);
 
-            TextIO.output(object_package_table, list2string([packageID, date]));
+            TextIO.output(object_package_table, list2string([packageID, date, ""]));
             TextIO.output(object_package_table, "\n");
             TextIO.closeOut(object_package_table);
 
@@ -614,7 +614,7 @@ fun log_delivered(eventID, customerID, packageID, orderID, itemIDs) =
     end;
 
     (* edge case - log additional item object for package deviation *)
-    fun log_additionalItem(itemID) =
+    fun log_additionalItem(itemID, itemType, price) =
     let 
         val date = calculateDate(IntInf.toInt(time()))
 
@@ -628,8 +628,9 @@ fun log_delivered(eventID, customerID, packageID, orderID, itemIDs) =
             TextIO.output(object_table, "\n");
             TextIO.closeOut(object_table);
 
-            TextIO.output(object_item_table, list2string([itemID, date]));
+            TextIO.output(object_item_table, list2string([itemID, date, "", itemType, Int.toString price]));
             TextIO.output(object_item_table, "\n");
             TextIO.closeOut(object_item_table)
         )
     end;
+
