@@ -59,6 +59,7 @@ fun calculateDate(minutes) =
 val event_table_path = "./output/event.csv";
 val object_table_path = "./output/object.csv";
 val event_object_table_path = "./output/event_object.csv";
+val object_object_table_path = "./output/object_object.csv";
 
 fun log_register(eventID, customerID, gender, yob, country) =
     let 
@@ -164,6 +165,8 @@ fun log_createOrder(eventID, customerID, orderID) =
         val object_order_table = TextIO.openAppend("./output/object_order.csv")
 
         val event_object_table = TextIO.openAppend(event_object_table_path)
+
+        val object_object_table = TextIO.openAppend(object_object_table_path)
         
     in
         (
@@ -190,7 +193,12 @@ fun log_createOrder(eventID, customerID, orderID) =
             TextIO.output(event_object_table, "\n");
             TextIO.output(event_object_table, list2string([eventID, orderID, ""]));
             TextIO.output(event_object_table, "\n");
-            TextIO.closeOut(event_object_table)
+            TextIO.closeOut(event_object_table);
+
+            (* object-object *)
+            TextIO.output(object_object_table, list2string([customerID, orderID, ""]));
+            TextIO.output(object_object_table, "\n");
+            TextIO.closeOut(object_object_table)
         )
     end;
 
@@ -206,6 +214,7 @@ fun log_addItem(eventID, customerID, orderID, itemID, itemType, price) =
 
         val event_object_table = TextIO.openAppend(event_object_table_path)
         
+        val object_object_table = TextIO.openAppend(object_object_table_path)
     in
         (
             (* event *)
@@ -233,7 +242,12 @@ fun log_addItem(eventID, customerID, orderID, itemID, itemType, price) =
             TextIO.output(event_object_table, "\n");
             TextIO.output(event_object_table, list2string([eventID, itemID, ""]));
             TextIO.output(event_object_table, "\n");
-            TextIO.closeOut(event_object_table)
+            TextIO.closeOut(event_object_table);
+
+            (* object-object *)
+            TextIO.output(object_object_table, list2string([orderID, itemID, ""]));
+            TextIO.output(object_object_table, "\n");
+            TextIO.closeOut(object_object_table)
         )
     end;
 
@@ -449,6 +463,14 @@ fun log_packages_event_object_table_helper(event_object_table, eventID, []) = ()
             log_packages_event_object_table_helper(event_object_table, eventID, itemIDs)
         );
 
+fun log_packages_object_object_table_helper(object_object_table, [], packageID) = () |
+    log_packages_object_object_table_helper(object_object_table, itemID::itemIDs, packageID) =
+        (
+            TextIO.output(object_object_table, list2string([itemID, packageID , ""]));
+            TextIO.output(object_object_table, "\n");
+            log_packages_object_object_table_helper(object_object_table, itemIDs, packageID)
+        );
+
 fun log_prepareDelivery(eventID, packageID, orderID, itemIDs, option) =
     let 
         val date = calculateDate(IntInf.toInt(time()))
@@ -460,6 +482,8 @@ fun log_prepareDelivery(eventID, packageID, orderID, itemIDs, option) =
         val object_package_table = TextIO.openAppend("./output/object_package.csv")
 
         val event_object_table = TextIO.openAppend(event_object_table_path)
+
+        val object_object_table = TextIO.openAppend(object_object_table_path)
         
     in
         (
@@ -487,7 +511,12 @@ fun log_prepareDelivery(eventID, packageID, orderID, itemIDs, option) =
             TextIO.output(event_object_table, list2string([eventID, orderID, ""]));
             TextIO.output(event_object_table, "\n");
             log_packages_event_object_table_helper(event_object_table, eventID, itemIDs);
-            TextIO.closeOut(event_object_table)
+            TextIO.closeOut(event_object_table);
+
+            (* object-object *)
+            log_packages_object_object_table_helper(object_object_table, itemIDs, packageID);
+            TextIO.closeOut(object_object_table)
+            
         )
     end;
 
@@ -614,12 +643,14 @@ fun log_delivered(eventID, customerID, packageID, orderID, itemIDs) =
     end;
 
     (* edge case - log additional item object for package deviation *)
-    fun log_additionalItem(itemID, itemType, price) =
+    fun log_additionalItem(packageID, itemID, itemType, price) =
     let 
         val date = calculateDate(IntInf.toInt(time()))
 
         val object_table = TextIO.openAppend(object_table_path)
         val object_item_table = TextIO.openAppend("./output/object_item.csv")
+
+        val object_object_table = TextIO.openAppend(object_object_table_path)
 
     in
         (
@@ -630,7 +661,12 @@ fun log_delivered(eventID, customerID, packageID, orderID, itemIDs) =
 
             TextIO.output(object_item_table, list2string([itemID, date, "", itemType, Int.toString price]));
             TextIO.output(object_item_table, "\n");
-            TextIO.closeOut(object_item_table)
+            TextIO.closeOut(object_item_table);
+
+            (* object-object *)
+            TextIO.output(object_object_table, list2string([packageID, itemID, ""]));
+            TextIO.output(object_object_table, "\n");
+            TextIO.closeOut(object_object_table)
         )
     end;
 
