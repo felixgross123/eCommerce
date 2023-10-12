@@ -9,13 +9,13 @@ list2string(x::l) = x ^ (if l=[] then "" else SEP) ^ list2string(l);
 
 (* attributes *)
 fun event_attrs(et) =
-    if      et = "select shipping"  then ["option"]
-    else if et = "pay"              then ["method"]
-    else if et = "confirm payment"  then ["method"]
-    else if et = "prepare delivery" then ["option"]
-    else if et = "give to carrier"  then ["option"]
-    else if et = "carrier confirms" then ["option"]
-    else if et = "delivery"         then ["option"]
+    if      et = "select shipping"  then ["selectShipping_option"]
+    else if et = "pay"              then ["pay_method"]
+    else if et = "confirm payment"  then ["confirmPayment_method"]
+    else if et = "prepare delivery" then ["prepareDelivery_option"]
+    else if et = "give to carrier"  then ["giveToCarrier_option"]
+    else if et = "carrier confirms" then ["carrierConfirms_option"]
+    else if et = "delivery"         then ["delivery_option"]
     else [];
 
 fun object_attrs(ot) =

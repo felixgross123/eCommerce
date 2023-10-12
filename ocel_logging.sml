@@ -643,14 +643,12 @@ fun log_delivered(eventID, customerID, packageID, orderID, itemIDs) =
     end;
 
     (* edge case - log additional item object for package deviation *)
-    fun log_additionalItem(packageID, itemID, itemType, price) =
+    fun log_additionalItem(itemID, itemType, price) =
     let 
         val date = calculateDate(IntInf.toInt(time()))
 
         val object_table = TextIO.openAppend(object_table_path)
         val object_item_table = TextIO.openAppend("./output/object_item.csv")
-
-        val object_object_table = TextIO.openAppend(object_object_table_path)
 
     in
         (
@@ -661,12 +659,7 @@ fun log_delivered(eventID, customerID, packageID, orderID, itemIDs) =
 
             TextIO.output(object_item_table, list2string([itemID, date, "", itemType, Int.toString price]));
             TextIO.output(object_item_table, "\n");
-            TextIO.closeOut(object_item_table);
-
-            (* object-object *)
-            TextIO.output(object_object_table, list2string([packageID, itemID, ""]));
-            TextIO.output(object_object_table, "\n");
-            TextIO.closeOut(object_object_table)
+            TextIO.closeOut(object_item_table)
         )
     end;
 
